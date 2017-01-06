@@ -492,8 +492,11 @@ SDL_VideoInit(const char *driver_name)
     }
     if (driver_name != NULL) {
         for (i = 0; bootstrap[i]; ++i) {
+            printf("'%s': '%s' driver_name != NULL\n", bootstrap[i]->name, bootstrap[i]->desc);
             if (SDL_strncasecmp(bootstrap[i]->name, driver_name, SDL_strlen(driver_name)) == 0) {
+                printf("match\n");
                 if (bootstrap[i]->available()) {
+                    printf("available\n");
                     video = bootstrap[i]->create(index);
                     break;
                 }
@@ -501,7 +504,9 @@ SDL_VideoInit(const char *driver_name)
         }
     } else {
         for (i = 0; bootstrap[i]; ++i) {
+            printf("'%s': '%s' driver_name == NULL\n", bootstrap[i]->name, bootstrap[i]->desc);
             if (bootstrap[i]->available()) {
+                printf("available\n");
                 video = bootstrap[i]->create(index);
                 if (video != NULL) {
                     break;

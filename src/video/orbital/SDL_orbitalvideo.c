@@ -110,6 +110,8 @@ int
 ORBITAL_VideoInit(_THIS)
 {
     SDL_DisplayMode mode;
+    SDL_OrbitalData * data;
+    char path[4096];
 
     printf("ORBITAL_VideoInit\n");
 
@@ -123,6 +125,19 @@ ORBITAL_VideoInit(_THIS)
         return -1;
     }
 
+    data = (SDL_OrbitalData *)SDL_calloc(sizeof(SDL_OrbitalData), 1);
+    if(!data){
+        SDL_OutOfMemory();
+        return -1;
+    }
+    _this->driverdata = data;
+
+    snprintf(path, 4096, "orbital:/0/0/%d/%d/", mode.w, mode.h);
+    data->fd = open(path, O_RDWR);
+    if(data->fd < 0){
+        return -1;
+    }
+
     SDL_zero(mode);
     SDL_AddDisplayMode(&_this->displays[0], &mode);
 
@@ -133,29 +148,7 @@ ORBITAL_VideoInit(_THIS)
 static int
 ORBITAL_SetDisplayMode(_THIS, SDL_VideoDisplay * display, SDL_DisplayMode * mode)
 {
-    SDL_OrbitalData * data;
-
     printf("ORBITAL_SetDisplayMode\n");
-
-    data = (SDL_OrbitalData *)_this->driverdata;
-    if(data){
-        if(data->fd >= 0){
-            close(data->fd);
-            data->fd = -1;
-        }
-    } else {
-        data = (SDL_OrbitalData *)SDL_calloc(sizeof(SDL_OrbitalData), 1);
-        if(!data){
-            SDL_OutOfMemory();
-            return -1;
-        }
-        _this->driverdata = data;
-    }
-
-    data->fd = open("orbital:", O_RDWR);
-    if(data->fd < 0){
-        return -1;
-    }
 
     return 0;
 }

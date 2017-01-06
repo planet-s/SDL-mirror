@@ -46,9 +46,12 @@ struct Event {
 
 void ORBITAL_PumpEvents(_THIS)
 {
+    struct Event event;
     SDL_OrbitalData * data = (SDL_OrbitalData *)_this->driverdata;
+
+    printf("ORBITAL_PumpEvents %lX\n", (unsigned long)data);
+
     if(data){
-        struct Event event;
         while(read(data->fd, &event, sizeof(event)) > 0) {
             if ( event.code == EVENT_KEY ) {
                 if ( event.c > 0 ) {
