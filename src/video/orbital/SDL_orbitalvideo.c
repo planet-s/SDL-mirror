@@ -22,7 +22,7 @@
 
 #if SDL_VIDEO_DRIVER_ORBITAL
 
-/* ORBITAL SDL video driver implementation; this is just enough to make an
+/* Dummy SDL video driver implementation; this is just enough to make an
  *  SDL-based application THINK it's got a working video driver, for
  *  applications that call SDL_Init(SDL_INIT_VIDEO) when they don't need it,
  *  and also for use as a collection of stubs when porting SDL to a new
@@ -34,7 +34,7 @@
  *
  * Initial work by Ryan C. Gordon (icculus@icculus.org). A good portion
  *  of this was cut-and-pasted from Stephane Peter's work in the AAlib
- *  SDL video driver.  Renamed to "ORBITAL" by Sam Lantinga.
+ *  SDL video driver.  Renamed to "DUMMY" by Sam Lantinga.
  */
 
 #include "SDL_video.h"
@@ -59,7 +59,12 @@ static void ORBITAL_VideoQuit(_THIS);
 static int
 ORBITAL_Available(void)
 {
-    return (1);
+    const char *envr = SDL_getenv("SDL_VIDEODRIVER");
+    if ((envr) && (SDL_strcmp(envr, ORBITALVID_DRIVER_NAME) == 0)) {
+        return (1);
+    }
+
+    return (0);
 }
 
 static void
@@ -79,7 +84,7 @@ ORBITAL_CreateDevice(int devindex)
         SDL_OutOfMemory();
         return (0);
     }
-    device->is_ORBITAL = SDL_TRUE;
+    device->is_dummy = SDL_FALSE;
 
     /* Set the function pointers */
     device->VideoInit = ORBITAL_VideoInit;
@@ -96,7 +101,7 @@ ORBITAL_CreateDevice(int devindex)
 }
 
 VideoBootStrap ORBITAL_bootstrap = {
-    ORBITALVID_DRIVER_NAME, "SDL ORBITAL video driver",
+    ORBITALVID_DRIVER_NAME, "SDL orbital video driver",
     ORBITAL_Available, ORBITAL_CreateDevice
 };
 
@@ -133,7 +138,6 @@ void
 ORBITAL_VideoQuit(_THIS)
 {
 }
-
+#else
+#error "Orbital not included"
 #endif /* SDL_VIDEO_DRIVER_ORBITAL */
-
-/* vi: set ts=4 sw=4 expandtab: */

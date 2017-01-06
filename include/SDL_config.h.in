@@ -33,7 +33,7 @@
 
 /* Make sure that this isn't included by Visual C++ */
 #ifdef _MSC_VER
-#error You should run hg revert SDL_config.h 
+#error You should run hg revert SDL_config.h
 #endif
 
 /* C language features */
@@ -284,6 +284,7 @@
 #undef SDL_VIDEO_DRIVER_WAYLAND_DYNAMIC_EGL
 #undef SDL_VIDEO_DRIVER_WAYLAND_DYNAMIC_CURSOR
 #undef SDL_VIDEO_DRIVER_WAYLAND_DYNAMIC_XKBCOMMON
+#undef SDL_VIDEO_DRIVER_ORBITAL
 #undef SDL_VIDEO_DRIVER_MIR
 #undef SDL_VIDEO_DRIVER_MIR_DYNAMIC
 #undef SDL_VIDEO_DRIVER_MIR_DYNAMIC_XKBCOMMON

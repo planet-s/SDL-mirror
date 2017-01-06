@@ -47,7 +47,8 @@ struct Event {
 void ORBITAL_PumpEvents(_THIS)
 {
     struct Event event;
-    while(read(_this->private->fd, &event, sizeof(event)) > 0){
+    //while(read(_this->private->fd, &event, sizeof(event)) > 0)
+    while(0){
         if ( event.code == EVENT_KEY ) {
             if ( event.c > 0 ) {
                 SDL_SendKeyboardKey(SDL_PRESSED, keymap[event.b]);
