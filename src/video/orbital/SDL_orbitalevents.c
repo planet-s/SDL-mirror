@@ -46,20 +46,22 @@ struct Event {
 
 void ORBITAL_PumpEvents(_THIS)
 {
-    struct Event event;
-    //while(read(_this->private->fd, &event, sizeof(event)) > 0)
-    while(0){
-        if ( event.code == EVENT_KEY ) {
-            if ( event.c > 0 ) {
-                SDL_SendKeyboardKey(SDL_PRESSED, keymap[event.b]);
-            } else {
-                SDL_SendKeyboardKey(SDL_RELEASED, keymap[event.b]);
+    SDL_OrbitalData * data = (SDL_OrbitalData *)_this->driverdata;
+    if(data){
+        struct Event event;
+        while(read(data->fd, &event, sizeof(event)) > 0) {
+            if ( event.code == EVENT_KEY ) {
+                if ( event.c > 0 ) {
+                    SDL_SendKeyboardKey(SDL_PRESSED, keymap[event.b]);
+                } else {
+                    SDL_SendKeyboardKey(SDL_RELEASED, keymap[event.b]);
+                }
+            } else if( event.code == EVENT_MOUSE ) {
+                SDL_SendMouseMotion(0, event.c, 0, event.a, event.b);
+                //SDL_PrivateMouseButton(Uint8 state, Uint8 button, Sint16 x, Sint16 y);
+            } else if ( event.code == EVENT_QUIT ) {
+                SDL_SendQuit();
             }
-        } else if( event.code == EVENT_MOUSE ) {
-            SDL_SendMouseMotion(0, event.c, 0, event.a, event.b);
-            //SDL_PrivateMouseButton(Uint8 state, Uint8 button, Sint16 x, Sint16 y);
-        } else if ( event.code == EVENT_QUIT ) {
-            SDL_SendQuit();
         }
     }
 }
@@ -68,7 +70,9 @@ void ORBITAL_InitOSKeymap(_THIS)
 {
     int i;
     for ( i = 0; i < SDL_arraysize(keymap); ++i )
+    {
         keymap[i] = SDLK_UNKNOWN;
+    }
 
     keymap[SCANCODE_ESCAPE] = SDLK_ESCAPE;
     keymap[SCANCODE_1] = SDLK_1;

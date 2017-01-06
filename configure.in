@@ -1794,8 +1794,8 @@ AC_HELP_STRING([--enable-video-orbital], [use Orbital video driver [[default=yes
     if test x$enable_video = xyes -a x$enable_video_orbital = xyes; then
         AC_DEFINE(SDL_VIDEO_DRIVER_ORBITAL, 1, [ ])
         SOURCES="$SOURCES $srcdir/src/video/orbital/*.c"
-        have_video=yes
         SUMMARY_video="${SUMMARY_video} orbital"
+        have_video=yes
     fi
 }
 

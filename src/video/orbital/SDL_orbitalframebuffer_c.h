@@ -20,13 +20,6 @@
 */
 #include "../../SDL_internal.h"
 
-#ifndef _SDL_orbitalvideo_h
-#define _SDL_orbitalvideo_h
-
-#include "../SDL_sysvideo.h"
-
-typedef struct SDL_OrbitalData {
-    int fd;
-} SDL_OrbitalData;
-
-#endif /* _SDL_orbitalvideo_h */
+extern int SDL_ORBITAL_CreateWindowFramebuffer(_THIS, SDL_Window * window, Uint32 * format, void ** pixels, int *pitch);
+extern int SDL_ORBITAL_UpdateWindowFramebuffer(_THIS, SDL_Window * window, const SDL_Rect * rects, int numrects);
+extern void SDL_ORBITAL_DestroyWindowFramebuffer(_THIS, SDL_Window * window);

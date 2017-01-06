@@ -43,9 +43,12 @@
 #include "../SDL_pixels_c.h"
 #include "../../events/SDL_events_c.h"
 
-#include "SDL_nullvideo.h"
-#include "SDL_nullevents_c.h"
-#include "SDL_nullframebuffer_c.h"
+#include "SDL_orbitalvideo.h"
+#include "SDL_orbitalevents_c.h"
+#include "SDL_orbitalframebuffer_c.h"
+
+#include <fcntl.h>
+#include <unistd.h>
 
 #define ORBITALVID_DRIVER_NAME "orbital"
 
@@ -59,12 +62,8 @@ static void ORBITAL_VideoQuit(_THIS);
 static int
 ORBITAL_Available(void)
 {
-    const char *envr = SDL_getenv("SDL_VIDEODRIVER");
-    if ((envr) && (SDL_strcmp(envr, ORBITALVID_DRIVER_NAME) == 0)) {
-        return (1);
-    }
-
-    return (0);
+    printf("ORBITAL_Available\n");
+    return (1);
 }
 
 static void
@@ -77,6 +76,8 @@ static SDL_VideoDevice *
 ORBITAL_CreateDevice(int devindex)
 {
     SDL_VideoDevice *device;
+
+    printf("ORBITAL_CreateDevice\n");
 
     /* Initialize all variables that we clean on shutdown */
     device = (SDL_VideoDevice *) SDL_calloc(1, sizeof(SDL_VideoDevice));
@@ -105,11 +106,12 @@ VideoBootStrap ORBITAL_bootstrap = {
     ORBITAL_Available, ORBITAL_CreateDevice
 };
 
-
 int
 ORBITAL_VideoInit(_THIS)
 {
     SDL_DisplayMode mode;
+
+    printf("ORBITAL_VideoInit\n");
 
     /* Use a fake 32-bpp desktop mode */
     mode.format = SDL_PIXELFORMAT_RGB888;
@@ -131,6 +133,30 @@ ORBITAL_VideoInit(_THIS)
 static int
 ORBITAL_SetDisplayMode(_THIS, SDL_VideoDisplay * display, SDL_DisplayMode * mode)
 {
+    SDL_OrbitalData * data;
+
+    printf("ORBITAL_SetDisplayMode\n");
+
+    data = (SDL_OrbitalData *)_this->driverdata;
+    if(data){
+        if(data->fd >= 0){
+            close(data->fd);
+            data->fd = -1;
+        }
+    } else {
+        data = (SDL_OrbitalData *)SDL_calloc(sizeof(SDL_OrbitalData), 1);
+        if(!data){
+            SDL_OutOfMemory();
+            return -1;
+        }
+        _this->driverdata = data;
+    }
+
+    data->fd = open("orbital:", O_RDWR);
+    if(data->fd < 0){
+        return -1;
+    }
+
     return 0;
 }
 
@@ -138,6 +164,5 @@ void
 ORBITAL_VideoQuit(_THIS)
 {
 }
-#else
-#error "Orbital not included"
+
 #endif /* SDL_VIDEO_DRIVER_ORBITAL */
