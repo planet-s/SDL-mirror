@@ -125,6 +125,8 @@ ORBITAL_VideoInit(_THIS)
         return -1;
     }
 
+    ORBITAL_InitOSKeymap(_this);
+
     data = (SDL_OrbitalData *)SDL_calloc(sizeof(SDL_OrbitalData), 1);
     if(!data){
         SDL_OutOfMemory();
